@@ -1,10 +1,81 @@
 [gd_scene format=3 uid="uid://yxcix8jw1a71"]
 
 [ext_resource type="Script" uid="uid://k3h52wrvyltf" path="res://scenes/main.gd" id="1_o5qli"]
+[ext_resource type="PackedScene" uid="uid://c0jrkb2fqhleo" path="res://scenes/ui/click_button.tscn" id="2_0wfyh"]
 
 [node name="Main" type="Control" unique_id=210350186]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_o5qli")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1233445811]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.101960786, 0.101960786, 0.18039216, 1)
+
+[node name="ClickZone" type="CenterContainer" parent="." unique_id=568194351]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ClickButton" parent="ClickZone" unique_id=1493723647 instance=ExtResource("2_0wfyh")]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+
+[node name="Background" type="ColorRect" parent="ClickZone/ClickButton" unique_id=1123172166]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.2901961, 0.5647059, 0.8509804, 1)
+
+[node name="HUD" type="VBoxContainer" parent="." unique_id=1747639011]
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("1_o5qli")
+
+[node name="CurrencyLabel" type="Label" parent="HUD" unique_id=1628093402]
+layout_mode = 2
+text = "💰 0"
+
+[node name="ProductionLabel" type="Label" parent="HUD" unique_id=988272009]
+layout_mode = 2
+text = "⚡ 0 / s"
+
+[node name="ShopTabs" type="TabContainer" parent="." unique_id=344427481]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 40.0
+
+[node name="AchievementToast" type="Panel" parent="." unique_id=1118836056]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ToastLabel" type="Label" parent="AchievementToast" unique_id=499149936]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Sounds" type="Node" parent="." unique_id=1477832693]
