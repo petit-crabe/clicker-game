@@ -40,8 +40,10 @@ layout_mode = 2
 
 [node name="HUD" type="VBoxContainer" parent="." unique_id=1747639011]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 260.0
+offset_top = 10.0
+offset_right = 318.0
+offset_bottom = 60.0
 
 [node name="CurrencyLabel" type="Label" parent="HUD" unique_id=1628093402]
 layout_mode = 2
@@ -52,9 +54,19 @@ layout_mode = 2
 text = "⚡ 0 / s"
 
 [node name="ShopTabs" type="TabContainer" parent="." unique_id=344427481]
+custom_minimum_size = Vector2(200, 200)
 layout_mode = 0
-offset_right = 8.0
-offset_bottom = 40.0
+offset_right = 102.0
+offset_bottom = 131.0
+current_tab = 0
+
+[node name="Upgrades" type="ScrollContainer" parent="ShopTabs" unique_id=1971764084]
+custom_minimum_size = Vector2(200, 100)
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="UpgradeList" type="VBoxContainer" parent="ShopTabs/Upgrades" unique_id=1141961512]
+layout_mode = 2
 
 [node name="AchievementToast" type="Panel" parent="." unique_id=1118836056]
 visible = false
