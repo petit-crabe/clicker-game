@@ -2,14 +2,25 @@ extends Control
 
 @onready var _currency_label: Label = $HUD/CurrencyLabel
 @onready var _production_label: Label = $HUD/ProductionLabel
-
 @onready var _click_button: TextureButton = $ClickZone/ClickButton
+
+@onready var _upgrade_list: VBoxContainer = $ShopTabs/Upgrades/UpgradeList
+
+const UPGRADE_BUTTON_SCENE := preload("res://scenes/ui/upgrade_button.tscn")
 
 func _ready() -> void:
 	GameManager.currency_changed.connect(_on_currency_changed)
 	_on_currency_changed(GameManager.currency)
 	_production_label.text = "⚡ 0 / s"
 	_click_button.pressed.connect(_on_click_button_pressed)
+	_build_upgrade_ui()
+	
+func _build_upgrade_ui() -> void:
+	for id in GameManager.upgrades:
+		var btn: Control = UPGRADE_BUTTON_SCENE.instantiate()
+		
+		_upgrade_list.add_child(btn)
+		btn.setup(id)
 	
 func _on_currency_changed(new_amount: float) -> void:
 	_currency_label.text = "💰 " + GameManager.format_number(new_amount)
