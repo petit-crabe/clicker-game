@@ -1,9 +1,11 @@
 extends Node
 
 signal currency_changed(new_amount: float)
+signal production_changed(new_rate: float)
 
 var currency: float = 0.0
 var currency_per_click: float = 1.0
+var currency_per_second: float = 0.0
 
 var upgrades: Dictionary = {
 	"better_click": {
@@ -19,6 +21,18 @@ var upgrades: Dictionary = {
 		"description": "Generates automatic clicks"
 	}
 }
+
+var generators: Dictionary = {
+	"cursor": {"level": 0, "production": 0.1, "base_cost": 15.0, "cost_multiplier": 1.15},
+	"grandma": {"level": 0, "production": 1.0, "base_cost": 100.0, "cost_multiplier": 1.15},
+	"farm": {"level": 0, "production": 8.0, "base_cost": 1100.0, "cost_multiplier": 1.15},
+	"mine": {"level": 0, "production": 47.0, "base_cost": 12000.0, "cost_multiplier": 1.15},
+	"factory": {"level": 0, "production": 260.0, "base_cost": 130000.0, "cost_multiplier": 1.15}
+}
+
+func _process(delta: float) -> void:
+	if currency_per_second > 0.0:
+		_add_currency(currency_per_second * delta)
 
 func click() -> void:
 	_add_currency(currency_per_click)
@@ -43,14 +57,48 @@ func buy_upgrade(id: String) -> bool:
 		"auto_click":
 			pass
 	
+	currency_changed.emit(currency)
+	_recalculate_production()
 	return true
+	
+func get_generator_cost(id: String) -> float:
+	if not generators.has(id):
+		return 0.0
+	
+	var data: Dictionary = generators[id]
+	return data["base_cost"] * pow(data["cost_multiplier"], data["level"])
+	
+func buy_generator(id: String) -> bool:
+	var cost := get_generator_cost(id)
+	if currency < cost:
+		return false
+		
+	currency -= cost
+	generators[id]["level"] += 1
+	
+	currency_changed.emit(currency)
+	_recalculate_production()
+	return true
+
+func _recalculate_production() -> void:
+	currency_per_second = 0.0
+	
+	for id in generators:
+		var gen: Dictionary = generators[id]
+		currency_per_second += gen["production"] * gen["level"]
+		
+	currency_per_second += upgrades["auto_click"]["level"] * 0.1
+	
+	production_changed.emit(currency_per_second)
 
 func _add_currency(amount: float) -> void:
 	currency += amount
 	currency_changed.emit(currency)
 	
 func format_number(value: float) -> String:
-	if value < 1_000.0:
+	if value < 1.0:
+		return "%.2f" % value
+	elif value < 1_000.0:
 		return str(int(value))
 	elif value < 1_000_000.0:
 		return "%.1fk" % (value / 1_000.0)
