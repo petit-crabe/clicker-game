@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://2152jjx3jd4o"]
+
+[ext_resource type="Script" uid="uid://ceqcm762fyfoi" path="res://scripts/generator_item.gd" id="1_vuaav"]
+
+[node name="GeneratorItem" type="Panel" unique_id=168377846]
+custom_minimum_size = Vector2(250, 120)
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_vuaav")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=149883621]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="IconRect" type="TextureRect" parent="HBoxContainer" unique_id=1525416614]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+stretch_mode = 5
+
+[node name="InfoContainer" type="VBoxContainer" parent="HBoxContainer" unique_id=217497236]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameLabel" type="Label" parent="HBoxContainer/InfoContainer" unique_id=1127181720]
+layout_mode = 2
+
+[node name="LevelLabel" type="Label" parent="HBoxContainer/InfoContainer" unique_id=95112480]
+layout_mode = 2
+
+[node name="ProductionLabel" type="Label" parent="HBoxContainer/InfoContainer" unique_id=1121483544]
+layout_mode = 2
+
+[node name="BuyButton" type="Button" parent="HBoxContainer/InfoContainer" unique_id=1905125690]
+layout_mode = 2
+text = "Buy"

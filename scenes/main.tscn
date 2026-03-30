@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://yxcix8jw1a71"]
 
-[ext_resource type="Script" uid="uid://k3h52wrvyltf" path="res://scenes/main.gd" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://k3h52wrvyltf" path="res://scripts/main.gd" id="1_o5qli"]
 [ext_resource type="PackedScene" uid="uid://c0jrkb2fqhleo" path="res://scenes/ui/click_button.tscn" id="2_0wfyh"]
 
 [node name="Main" type="Control" unique_id=210350186]
@@ -67,6 +67,16 @@ metadata/_tab_index = 0
 
 [node name="UpgradeList" type="VBoxContainer" parent="ShopTabs/Upgrades" unique_id=1141961512]
 layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Generators" type="ScrollContainer" parent="ShopTabs" unique_id=103760687]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="GeneratorList" type="VBoxContainer" parent="ShopTabs/Generators" unique_id=161192614]
+layout_mode = 2
+size_flags_vertical = 3
 
 [node name="AchievementToast" type="Panel" parent="." unique_id=1118836056]
 visible = false

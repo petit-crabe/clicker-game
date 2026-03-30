@@ -5,15 +5,24 @@ extends Control
 @onready var _click_button: TextureButton = $ClickZone/ClickButton
 
 @onready var _upgrade_list: VBoxContainer = $ShopTabs/Upgrades/UpgradeList
+@onready var _generator_list: VBoxContainer = $ShopTabs/Generators/GeneratorList
 
 const UPGRADE_BUTTON_SCENE := preload("res://scenes/ui/upgrade_button.tscn")
+const GENERATOR_ITEM_SCENE := preload("res://scenes/ui/generator_item.tscn")
 
 func _ready() -> void:
 	GameManager.currency_changed.connect(_on_currency_changed)
+	GameManager.production_changed.connect(_on_production_changed)
+	
+	print("production_changed connecté : ", GameManager.production_changed.get_connections())
+	
 	_on_currency_changed(GameManager.currency)
-	_production_label.text = "⚡ 0 / s"
+	_on_production_changed(GameManager.currency_per_second)
+	
 	_click_button.pressed.connect(_on_click_button_pressed)
+	
 	_build_upgrade_ui()
+	_build_generator_ui()
 	
 func _build_upgrade_ui() -> void:
 	for id in GameManager.upgrades:
@@ -21,9 +30,18 @@ func _build_upgrade_ui() -> void:
 		
 		_upgrade_list.add_child(btn)
 		btn.setup(id)
-	
+
+func _build_generator_ui() -> void:
+	for id in GameManager.generators:
+		var item: Control = GENERATOR_ITEM_SCENE.instantiate()
+		_generator_list.add_child(item)
+		item.setup(id)
+
 func _on_currency_changed(new_amount: float) -> void:
 	_currency_label.text = "💰 " + GameManager.format_number(new_amount)
+	
+func _on_production_changed(new_rate: float) -> void:
+	_production_label.text = "⚡ %s / s" % GameManager.format_number(new_rate)
 
 func _on_click_button_pressed() -> void:
 	_spawn_floating_number(GameManager.currency_per_click, _click_button.global_position)
