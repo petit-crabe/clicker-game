@@ -30,6 +30,9 @@ var generators: Dictionary = {
 	"factory": {"level": 0, "production": 260.0, "base_cost": 130000.0, "cost_multiplier": 1.15}
 }
 
+func _ready() -> void:
+	SaveSystem.load_game()
+
 func _process(delta: float) -> void:
 	if currency_per_second > 0.0:
 		_add_currency(currency_per_second * delta)
@@ -59,6 +62,7 @@ func buy_upgrade(id: String) -> bool:
 	
 	currency_changed.emit(currency)
 	_recalculate_production()
+	SaveSystem.save_game()
 	return true
 	
 func get_generator_cost(id: String) -> float:
@@ -78,6 +82,7 @@ func buy_generator(id: String) -> bool:
 	
 	currency_changed.emit(currency)
 	_recalculate_production()
+	SaveSystem.save_game()
 	return true
 
 func _recalculate_production() -> void:
