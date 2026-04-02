@@ -14,8 +14,6 @@ func _ready() -> void:
 	GameManager.currency_changed.connect(_on_currency_changed)
 	GameManager.production_changed.connect(_on_production_changed)
 	
-	print("production_changed connecté : ", GameManager.production_changed.get_connections())
-	
 	_on_currency_changed(GameManager.currency)
 	_on_production_changed(GameManager.currency_per_second)
 	
@@ -23,6 +21,12 @@ func _ready() -> void:
 	
 	_build_upgrade_ui()
 	_build_generator_ui()
+	
+	var save_timer := Timer.new()
+	save_timer.wait_time = 30.0
+	save_timer.autostart = true
+	save_timer.timeout.connect(SaveSystem.save_game)
+	add_child(save_timer)
 	
 func _build_upgrade_ui() -> void:
 	for id in GameManager.upgrades:
@@ -63,4 +67,15 @@ func _spawn_floating_number(value: float, origin: Vector2) -> void:
 	await tween.finished
 	
 	label.queue_free()
-	
+
+# === DEBUG ONLY — remove before shipping ===
+func _input(event: InputEvent) -> void:
+	if OS.is_debug_build():  # Safety: only works in editor/debug builds
+		if event.is_action_pressed("ui_cancel"):  # Escape key — or pick another
+			pass  # placeholder
+
+			# F8 → reset save and restart
+		if event is InputEventKey and event.pressed:
+			if event.keycode == KEY_F8:
+				print("[DEBUG] Resetting game via SaveSystem.reset_game()")
+				SaveSystem.reset_game()
