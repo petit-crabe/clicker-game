@@ -2,6 +2,7 @@ extends Node
 
 signal currency_changed(new_amount: float)
 signal production_changed(new_rate: float)
+signal achievement_unlocked(id: String)
 
 var currency: float = 0.0
 var currency_per_click: float = 1.0
@@ -28,6 +29,12 @@ var generators: Dictionary = {
 	"farm": {"level": 0, "production": 8.0, "base_cost": 1100.0, "cost_multiplier": 1.15},
 	"mine": {"level": 0, "production": 47.0, "base_cost": 12000.0, "cost_multiplier": 1.15},
 	"factory": {"level": 0, "production": 260.0, "base_cost": 130000.0, "cost_multiplier": 1.15}
+}
+
+var achievements: Dictionary = {
+	"first_click":  { "unlocked": false, "label": "First step !"      },
+	"millionaire":  { "unlocked": false, "label": "Millionaire !"     },
+	"big_producer": { "unlocked": false, "label": "Big producer !"  }
 }
 
 func _ready() -> void:
@@ -96,9 +103,23 @@ func _recalculate_production() -> void:
 	
 	production_changed.emit(currency_per_second)
 
+func _check_achievements() -> void:
+	if not achievements["first_click"]["unlocked"] and currency >= 1.0:
+		_unlock_achievement("first_click")
+	if not achievements["millionaire"]["unlocked"] and currency >= 1_000_000.0:
+		_unlock_achievement("millionaire")
+	if not achievements["big_producer"]["unlocked"] and currency_per_second >= 100.0:
+		_unlock_achievement("big_producer")
+
+func _unlock_achievement(id: String) -> void:
+	achievements[id]["unlocked"] = true
+	achievement_unlocked.emit(id)
+	SaveSystem.save_game()
+
 func _add_currency(amount: float) -> void:
 	currency += amount
 	currency_changed.emit(currency)
+	_check_achievements()
 	
 func format_number(value: float) -> String:
 	if value < 1.0:

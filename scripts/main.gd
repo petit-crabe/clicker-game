@@ -7,12 +7,16 @@ extends Control
 @onready var _upgrade_list: VBoxContainer = $ShopTabs/Upgrades/UpgradeList
 @onready var _generator_list: VBoxContainer = $ShopTabs/Generators/GeneratorList
 
+@onready var _achievements_toast: Panel = $AchievementToast
+@onready var _toast_label: Label = $AchievementToast/ToastLabel
+
 const UPGRADE_BUTTON_SCENE := preload("res://scenes/ui/upgrade_button.tscn")
 const GENERATOR_ITEM_SCENE := preload("res://scenes/ui/generator_item.tscn")
 
 func _ready() -> void:
 	GameManager.currency_changed.connect(_on_currency_changed)
 	GameManager.production_changed.connect(_on_production_changed)
+	GameManager.achievement_unlocked.connect(_on_achievement_unlocked)
 	
 	_on_currency_changed(GameManager.currency)
 	_on_production_changed(GameManager.currency_per_second)
@@ -50,6 +54,21 @@ func _on_production_changed(new_rate: float) -> void:
 func _on_click_button_pressed() -> void:
 	_spawn_floating_number(GameManager.currency_per_click, _click_button.global_position)
 	
+func _on_achievement_unlocked(id: String) -> void:
+	_show_achievement_toast(GameManager.achievements[id]["label"])
+
+func _show_achievement_toast(text: String) -> void:
+	_toast_label.text = "🏆 " + text
+	_achievements_toast.modulate.a = 1.0
+	_achievements_toast.visible = true
+	
+	var tween := create_tween()
+	tween.tween_interval(2.5)
+	tween.tween_property(_achievements_toast, "modulate:a", 0.0, 0.5)
+	
+	await tween.finished
+	_achievements_toast.visible = false
+	
 func _spawn_floating_number(value: float, origin: Vector2) -> void:
 	var label := Label.new()
 	
@@ -70,12 +89,14 @@ func _spawn_floating_number(value: float, origin: Vector2) -> void:
 
 # === DEBUG ONLY — remove before shipping ===
 func _input(event: InputEvent) -> void:
-	if OS.is_debug_build():  # Safety: only works in editor/debug builds
-		if event.is_action_pressed("ui_cancel"):  # Escape key — or pick another
-			pass  # placeholder
+	if not OS.is_debug_build():
+		return   # Do nothing in exported builds
 
-			# F8 → reset save and restart
-		if event is InputEventKey and event.pressed:
-			if event.keycode == KEY_F8:
-				print("[DEBUG] Resetting game via SaveSystem.reset_game()")
+	if event is InputEventKey and event.pressed:
+		match event.keycode:
+			KEY_F6:
+				# Add 1 000 000 currency to test the "millionaire" achievement
+				GameManager._add_currency(1_000_000.0)
+			KEY_F8:
+				# Full reset — delete save and reload
 				SaveSystem.reset_game()

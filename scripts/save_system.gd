@@ -12,6 +12,7 @@ func save_game() -> void:
 		"currency_per_click": GameManager.currency_per_click,
 		"upgrades": GameManager.upgrades,
 		"generators": GameManager.generators,
+		"achievements": GameManager.achievements,
 	}
 	
 	file.store_var(data)
@@ -37,6 +38,7 @@ func load_game() -> void:
 	GameManager.currency_per_click = data.get("currency_per_click", 1.0)
 	GameManager.upgrades = data.get("upgrades", GameManager.upgrades)
 	GameManager.generators = data.get("generators", GameManager.generators)
+	GameManager.achievements = data.get("achievements", GameManager.achievements)
 	
 	GameManager._recalculate_production()
 	
